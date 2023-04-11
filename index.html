@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>度数転換</title>
+  </head>
+  <body>
+    <h1>度数転換</h1>
+    <table>
+      <thead>
+        <tr>
+          <th></th>
+          <th>S</th>
+          <th>C</th>
+          <th>AX</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>R</th>
+          <td><input type="number" id="input_S_R" /></td>
+          <td><input type="number" id="input_C_R" /></td>
+          <td><input type="number" id="input_AX_R" /></td>
+        </tr>
+        <tr>
+          <th>L</th>
+          <td><input type="number" id="input_S_L" /></td>
+          <td><input type="number" id="input_C_L" /></td>
+          <td><input type="number" id="input_AX_L" /></td>
+        </tr>
+      </tbody>
+    </table>
+    <button onclick="calculate()">計算</button>
+
+    <table id="resultTable" style="display: none">
+      <thead>
+        <tr>
+          <th></th>
+          <th>S</th>
+          <th>C</th>
+          <th>AX</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>R</th>
+          <td id="result_R_S"></td>
+          <td id="result_R_C"></td>
+          <td id="result_R_AX"></td>
+        </tr>
+        <tr>
+          <th>L</th>
+          <td id="result_L_S"></td>
+          <td id="result_L_C"></td>
+          <td id="result_L_AX"></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <script>
+      function calculate() {
+        // 入力フォームから値を取得
+        const input_S_R = parseFloat(document.getElementById("input_S_R").value);
+        const input_C_R = parseFloat(document.getElementById("input_C_R").value);
+        const input_AX_R = parseFloat(document.getElementById("input_AX_R").value);
+        const input_S_L = parseFloat(document.getElementById("input_S_L").value);
+        const input_C_L = parseFloat(document.getElementById("input_C_L").value);
+        const input_AX_L = parseFloat(document.getElementById("input_AX_L").value);
+
+        // 計算
+        const S_R = (input_S_R + input_C_R).toFixed(2);
+        const C_R = (-input_C_R).toFixed(2);
+        const AX_R = input_AX_R <= 90 ? (input_AX_R + 90) : (input_AX_R - 90);
+        const S_L = (input_S_L + input_C_L).toFixed(2);
+        const C_L = (-input_C_L).toFixed(2);
+        const AX_L = input_AX_L <= 90 ? (input_AX_L + 90) : (input_AX_L - 90);
+
+        // 結果を表示
+        document.getElementById("result_R_S").textContent = S_R;
+        document.getElementById("result_R_C").textContent = C_R;
+        document.getElementById("result_R_AX").textContent = AX_R;
+        document.getElementById("result_L_S").textContent = S_L;
+        document.getElementById("result_L_C").textContent = C_L;
+        document.getElementById("result_L_AX").textContent = AX_L;
+
+        // 正負の符号を付ける
+        if (S_R >= 0) {
+          document.getElementById("result_R_S").textContent = "+" + S_R;
+        }
+        if (C_R >= 0) {
+          document.getElementById("result_R_C").textContent = "+" + C_R;
+        }
+        if (S_L >= 0) {
+          document.getElementById("result_L_S").textContent = "+" + S_L;
+        }
+        if (C_L >= 0) {
+          document.getElementById("result_L_C").textContent = "+" + C_L;
+        }
+
+        // 結果を表示する
+        document.getElementById("resultTable").style.display = "block";
+      }
+    </script>
+  </body>
+</html>
+
