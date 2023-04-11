@@ -1,47 +1,95 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8" name=”viewport” content=”width=device-width, initial-scale=1.0″ />
-    <title>度数転換</title>
+    <title>表とフォームの計算</title>
+    <style>
+      /* ボタンのスタイル */
+      button {
+        margin-top: 10px;
+        padding: 10px 20px;
+        font-size: 16px;
+        font-weight: bold;
+        color: #fff;
+        background-color: #007bff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      
+      /* 入力フォームのスタイル */
+      input[type="text"] {
+        width: 50px;
+        padding: 5px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 16px;
+      }
+      
+      /* テーブルのスタイル */
+      table {
+        margin-top: 20px;
+        border-collapse: collapse;
+        width: 100%;
+      }
+      
+      th, td {
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: center;
+        font-size: 16px;
+      }
+      
+      th {
+        background-color: #f2f2f2;
+      }
+      
+      /* 結果のテーブルのスタイル */
+      #resultTable {
+        margin-top: 20px;
+        display: none;
+      }
+      
+      /* エラーメッセージのスタイル */
+      .error {
+        color: #ff0000;
+        font-size: 14px;
+        margin-top: 5px;
+      }
+    </style>
   </head>
   <body>
-    <h1>度数転換</h1>
-    <table>
-      <thead>
+    <h1>表とフォームの計算</h1>
+    <form>
+      <table>
         <tr>
           <th></th>
           <th>S</th>
           <th>C</th>
           <th>AX</th>
         </tr>
-      </thead>
-      <tbody>
         <tr>
           <th>R</th>
-          <td><input type="number" id="input_S_R" size="5" /></td>
-          <td><input type="number" id="input_C_R" size="5" /></td>
-          <td><input type="number" id="input_AX_R" size="5" /></td>
+          <td><input type="text" name="S_R"></td>
+          <td><input type="text" name="C_R"></td>
+          <td><input type="text" name="AX_R"></td>
         </tr>
         <tr>
           <th>L</th>
-          <td><input type="number" id="input_S_L" size="5" /></td>
-          <td><input type="number" id="input_C_L" size="5" /></td>
-          <td><input type="number" id="input_AX_L" size="5" /></td>
+          <td><input type="text" name="S_L"></td>
+          <td><input type="text" name="C_L"></td>
+          <td><input type="text" name="AX_L"></td>
         </tr>
-      </tbody>
-    </table>
-    <button onclick="calculate()">計算</button>
-
-    <table id="resultTable" style="display: none">
-      <thead>
+      </table>
+      <button type="button" onclick="calculate()">計算する</button>
+    </form>
+    <div id="resultTable">
+      <table>
         <tr>
           <th></th>
           <th>S</th>
           <th>C</th>
           <th>AX</th>
         </tr>
-      </thead>
-      <tbody>
         <tr>
           <th>R</th>
           <td id="result_R_S"></td>
@@ -54,53 +102,57 @@
           <td id="result_L_C"></td>
           <td id="result_L_AX"></td>
         </tr>
-      </tbody>
-    </table>
-
+      </table>
+    </div>
+    <div id="error" class="error"></div>
+    
     <script>
       function calculate() {
-        // 入力フォームから値を取得
-        const input_S_R = parseFloat(document.getElementById("input_S_R").value);
-        const input_C_R = parseFloat(document.getElementById("input_C_R").value);
-        const input_AX_R = parseFloat(document.getElementById("input_AX_R").value);
-        const input_S_L = parseFloat(document.getElementById("input_S_L").value);
-        const input_C_L = parseFloat(document.getElementById("input_C_L").value);
-        const input_AX_L = parseFloat(document.getElementById("input_AX_L").value);
-
+        // フォームの値を取得
+        const S_R = parseFloat(document.getElementsByName("S_R")[0].value);
+        const C_R = parseFloat(document.getElementsByName("C_R")[0].value);
+        const AX_R = parseFloat(document.getElementsByName("AX_R")[0].value);
+        const S_L = parseFloat(document.getElementsByName("S_L")[0].value);
+        const C_L = parseFloat(document.getElementsByName("C_L")[0].value);
+        const AX_L = parseFloat(document.getElementsByName("AX_L")[0].value);
+        
+        // エラーチェック
+        if (isNaN(S_R) || isNaN(C_R) || isNaN(AX_R) || isNaN(S_L) || isNaN(C_L) || isNaN(AX_L)) {
+          document.getElementById("error").innerHTML = "入力された値が不正です。";
+          document.getElementById("resultTable").style.display = "none";
+          return;
+        }
+        
         // 計算
-        const S_R = (input_S_R + input_C_R).toFixed(2);
-        const C_R = (-input_C_R).toFixed(2);
-        const AX_R = input_AX_R <= 90 ? (input_AX_R + 90) : (input_AX_R - 90);
-        const S_L = (input_S_L + input_C_L).toFixed(2);
-        const C_L = (-input_C_L).toFixed(2);
-        const AX_L = input_AX_L <= 90 ? (input_AX_L + 90) : (input_AX_L - 90);
-
+        const new_S_R = (S_R + C_R).toFixed(2);
+        const new_C_R = (-C_R).toFixed(2);
+        let new_AX_R;
+        if (AX_R <= 90) {
+          new_AX_R = (AX_R + 90).toFixed(2);
+        } else {
+          new_AX_R = (AX_R - 90).toFixed(2);
+        }
+        const new_S_L = (S_L + C_L).toFixed(2);
+        const new_C_L = (-C_L).toFixed(2);
+        let new_AX_L;
+        if (AX_L <= 90) {
+          new_AX_L = (AX_L + 90).toFixed(2);
+        } else {
+          new_AX_L = (AX_L - 90).toFixed(2);
+        }
+        
+        // 結果の表示
+        document.getElementById("result_R_S").innerHTML = new_S_R >= 0 ? "+" + new_S_R : new_S_R;
+        document.getElementById("result_R_C").innerHTML = new_C_R >= 0 ? "+" + new_C_R : new_C_R;
+        document.getElementById("result_R_AX").innerHTML = new_AX_R;
+        document.getElementById("result_L_S").innerHTML = new_S_L >= 0 ? "+" + new_S_L : new_S_L;
+        document.getElementById("result_L_C").innerHTML = new_C_L >= 0 ? "+" + new_C_L : new_C_L;
+        document.getElementById("result_L_AX").innerHTML = new_AX_L;
+        
         // 結果を表示
-        document.getElementById("result_R_S").textContent = S_R;
-        document.getElementById("result_R_C").textContent = C_R;
-        document.getElementById("result_R_AX").textContent = AX_R;
-        document.getElementById("result_L_S").textContent = S_L;
-        document.getElementById("result_L_C").textContent = C_L;
-        document.getElementById("result_L_AX").textContent = AX_L;
-
-        // 正負の符号を付ける
-        if (S_R >= 0) {
-          document.getElementById("result_R_S").textContent = "+" + S_R;
-        }
-        if (C_R >= 0) {
-          document.getElementById("result_R_C").textContent = "+" + C_R;
-        }
-        if (S_L >= 0) {
-          document.getElementById("result_L_S").textContent = "+" + S_L;
-        }
-        if (C_L >= 0) {
-          document.getElementById("result_L_C").textContent = "+" + C_L;
-        }
-
-        // 結果を表示する
-        document.getElementById("resultTable").style.display = "block";
+        document.getElementById("resultTable").style.display = "table";
+        document.getElementById("error").innerHTML = "";
       }
     </script>
   </body>
 </html>
-
